@@ -5,10 +5,10 @@ resource "aws_s3_bucket" "codebuild_artifacts" {
 
 
 resource "aws_codebuild_project" "test-0" {
-  name          = "test-project"
+  name          = "test-tr-project"
   description   = "test_codebuild_project"
   build_timeout = "5"
-  service_role  = "arn:aws:iam::208264774173:role/service-role/terraform-testik"
+  service_role  = "${var.code_build_role}"
 
   artifacts {
     type = "CODEPIPELINE"

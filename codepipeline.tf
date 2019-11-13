@@ -10,9 +10,9 @@ provider "github" {
 
 locals {
   webhook_secret = "${var.github_token}"
-  github_repo = "terraform-pnp"
+  github_repo = "${var.github_repo}"
   github_branch = "master"
-  aws_iam_role = "arn:aws:iam::208264774173:role/service-role/AWSCodePipelineServiceRole-us-east-1-terraform-rest"
+  aws_iam_role = "${var.code_pipeline_role}"
 }
 
 
