@@ -5,7 +5,7 @@ provider "aws" {
 provider "github" {
   individual = false
   token      = "${var.github_token}"
-  organization = "cyplenochek"
+  organization = "${var.github_user}"
 }
 
 locals {
@@ -42,7 +42,7 @@ resource "aws_codepipeline" "codepipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        Owner  = "cyplenochek"
+        Owner  = "${var.github_user}"
         Repo   = "${local.github_repo}"
         Branch = "${local.github_branch}"
         OAuthToken = "${local.webhook_secret}"

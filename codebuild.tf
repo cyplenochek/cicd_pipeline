@@ -4,7 +4,7 @@ resource "aws_s3_bucket" "codebuild_artifacts" {
 }
 
 
-resource "aws_codebuild_project" "test-0" {
+resource "aws_codebuild_project" "test-tr" {
   name          = "test-tr-project"
   description   = "test_codebuild_project"
   build_timeout = "5"
@@ -28,7 +28,7 @@ resource "aws_codebuild_project" "test-0" {
   logs_config {
 
     s3_logs {
-      status = "ENABLED"
+      status = "DISABLED"
       location = "${aws_s3_bucket.codebuild_artifacts.id}/build-log"
     }
   }
@@ -40,6 +40,6 @@ resource "aws_codebuild_project" "test-0" {
 
 
   tags = {
-    Environment = "Test"
+    Environment = "Test-tr"
   }
 }
