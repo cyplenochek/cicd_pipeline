@@ -3,16 +3,16 @@ provider "aws" {
 }
 
 provider "github" {
-  individual = false
-  token      = "${var.github_token}"
+  individual   = false
+  token        = "${var.github_token}"
   organization = "${var.github_user}"
 }
 
 locals {
   webhook_secret = "${var.github_token}"
-  github_repo = "${var.github_repo}"
-  github_branch = "master"
-  aws_iam_role = "${var.code_pipeline_role}"
+  github_repo    = "${var.github_repo}"
+  github_branch  = "master"
+  aws_iam_role   = "${var.code_pipeline_role}"
 }
 
 
@@ -42,9 +42,9 @@ resource "aws_codepipeline" "codepipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        Owner  = "${var.github_user}"
-        Repo   = "${local.github_repo}"
-        Branch = "${local.github_branch}"
+        Owner      = "${var.github_user}"
+        Repo       = "${local.github_repo}"
+        Branch     = "${local.github_branch}"
         OAuthToken = "${local.webhook_secret}"
       }
     }
@@ -60,12 +60,24 @@ resource "aws_codepipeline" "codepipeline" {
       provider         = "CodeBuild"
       input_artifacts  = ["source_output"]
       output_artifacts = ["test_output"]
-      version = "1"
+      version          = "1"
 
       configuration = {
-        ProjectName = "test-project"
+        ProjectName          = "test-tr-project"
         EnvironmentVariables = "[{\"name\":\"STAGE\",\"value\":\"TEST\",\"type\":\"PLAINTEXT\"}]"
       }
+    }
+  }
+
+  stage {
+    name = "Approve"
+
+    action {
+      name     = "Approval"
+      category = "Approval"
+      owner    = "AWS"
+      provider = "Manual"
+      version  = "1"
     }
   }
 
@@ -73,16 +85,16 @@ resource "aws_codepipeline" "codepipeline" {
     name = "Deploy"
 
     action {
-      name            = "Deploy"
-      category        = "Build"
-      owner           = "AWS"
+      name             = "Deploy"
+      category         = "Build"
+      owner            = "AWS"
       provider         = "CodeBuild"
       input_artifacts  = ["source_output"]
       output_artifacts = ["build_output"]
-      version = "1"
+      version          = "1"
 
       configuration = {
-        ProjectName = "test-project"
+        ProjectName          = "test-tr-project"
         EnvironmentVariables = "[{\"name\":\"STAGE\",\"value\":\"DEPLOY\",\"type\":\"PLAINTEXT\"}]"
       }
 
@@ -117,7 +129,7 @@ resource "github_repository_webhook" "githubchik" {
     content_type = "json"
     insecure_ssl = true
 
-    secret       = "${local.webhook_secret}"
+    secret = "${local.webhook_secret}"
 
   }
   events = ["push"]

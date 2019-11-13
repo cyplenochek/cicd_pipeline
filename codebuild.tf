@@ -11,7 +11,7 @@ resource "aws_codebuild_project" "test-tr" {
   service_role  = "${var.code_build_role}"
 
   artifacts {
-    type = "CODEPIPELINE"
+    type                   = "CODEPIPELINE"
     override_artifact_name = true
   }
 
@@ -28,7 +28,7 @@ resource "aws_codebuild_project" "test-tr" {
   logs_config {
 
     s3_logs {
-      status = "DISABLED"
+      status   = "ENABLED"
       location = "${aws_s3_bucket.codebuild_artifacts.id}/build-log"
     }
   }
